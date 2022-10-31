@@ -1,3 +1,3 @@
-# This is my readme branch and is being used to test.
-#
-# Hello Johnny!
+# Hello!
+# This is my finished product server with working HTTP methods.
+# Created in GoLand and tested in Insomnia.
