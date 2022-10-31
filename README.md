@@ -1,2 +1,3 @@
-# This project is a server which contains GET/POST/PUT/DELETE endpoints
-# & utilizes gorilla mux
+# This is a repository of my work throughout my time at PivotTechSchool.
+# Each branch will be a separate project.
+# Thanks for looking!
