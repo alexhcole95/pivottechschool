@@ -109,16 +109,14 @@ func initProducts() {
 
 func main() {
 	initProducts()
-
 	r := mux.NewRouter()
-	// Routes are a path and a handler function.
+
 	r.HandleFunc("/products", getProductsHandler)
 	r.HandleFunc("/product", createNewProductHandler).Methods("POST")
 	r.HandleFunc("/product/{id}", updateProductHandler).Methods("PUT")
 	r.HandleFunc("/product/{id}", deleteProductHandler).Methods("DELETE")
 	r.HandleFunc("/product/{id}", returnProductHandler)
 
-	// Bind to a port and pass our router in
 	log.Println("Listening on Port 8080")
 	log.Fatal(http.ListenAndServe(":8080", r))
 }
