@@ -112,10 +112,10 @@ func main() {
 	r := mux.NewRouter()
 
 	r.HandleFunc("/products", getProductsHandler)
-	r.HandleFunc("/product", createNewProductHandler).Methods("POST")
-	r.HandleFunc("/product/{id}", updateProductHandler).Methods("PUT")
-	r.HandleFunc("/product/{id}", deleteProductHandler).Methods("DELETE")
-	r.HandleFunc("/product/{id}", returnProductHandler)
+	r.HandleFunc("/products", createNewProductHandler).Methods("POST")
+	r.HandleFunc("/products/{id}", updateProductHandler).Methods("PUT")
+	r.HandleFunc("/products/{id}", deleteProductHandler).Methods("DELETE")
+	r.HandleFunc("/products/{id}", returnProductHandler)
 
 	log.Println("Listening on Port 8080")
 	log.Fatal(http.ListenAndServe(":8080", r))
