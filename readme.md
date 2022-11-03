@@ -1,8 +1,8 @@
+## Hello!
 
-## This is a repository that consists of my work while at PivotTechSchool.
+<p>This branch consists of a working (basic) calculator along with written tests.</p>
+<p>This project was coded in GoLand.</p>
 
-Each branch will be a separate project and will be named accordingly.
-
-***
+---
 
 **Thanks for looking!** Please reach out if there are any questions!
