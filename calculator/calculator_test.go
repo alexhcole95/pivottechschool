@@ -1,6 +1,7 @@
-package calculator
+package calculator_test
 
 import (
+	"github.com/alexhcole95/pivottechschool/calculator"
 	"testing"
 )
 
