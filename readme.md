@@ -1,8 +1,9 @@
 
-## This is a repository that consists of my work while at PivotTechSchool.
+## Hello!
 
-Each branch will be a separate project and will be named accordingly.
+<p>This branch consists of a finished product server with working HTTP methods.</p>
+<p>The project was coded in GoLand and tested in Insomnia.</p>
 
-***
+---
 
 **Thanks for looking!** Please reach out if there are any questions!
