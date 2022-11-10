@@ -44,6 +44,7 @@ func returnProductHandler(w http.ResponseWriter, r *http.Request) {
 
 func createNewProductHandler(w http.ResponseWriter, r *http.Request) {
 	reqBody, _ := ioutil.ReadAll(r.Body)
+	defer r.Body.Close()
 	var item product
 	if err := json.Unmarshal(reqBody, &item); err != nil {
 		w.WriteHeader(http.StatusInternalServerError)
@@ -64,6 +65,7 @@ func updateProductHandler(w http.ResponseWriter, r *http.Request) {
 
 	var updatedProduct product
 	reqBody, _ := ioutil.ReadAll(r.Body)
+	defer r.Body.Close()
 	if err = json.Unmarshal(reqBody, &updatedProduct); err != nil {
 		w.WriteHeader(http.StatusInternalServerError)
 	}
@@ -75,7 +77,7 @@ func updateProductHandler(w http.ResponseWriter, r *http.Request) {
 			product.Description = updatedProduct.Description
 			product.Price = updatedProduct.Price
 			products[i] = product
-			if err = json.NewEncoder(w).Encode(product); err != nil {
+			if err = json.NewEncoder(w).Encode(http.StatusOK); err != nil {
 				w.WriteHeader(http.StatusInternalServerError)
 			}
 		}
@@ -89,9 +91,9 @@ func deleteProductHandler(w http.ResponseWriter, r *http.Request) {
 		http.Error(w, "Unable to convert string to int", http.StatusInternalServerError)
 	}
 
-	for index, product := range products {
+	for i, product := range products {
 		if int64(product.ID) == id {
-			products = append(products[:index], products[index+1:]...)
+			products = append(products[:i], products[i+1:]...)
 		}
 	}
 }
