@@ -43,8 +43,12 @@ func returnProductHandler(w http.ResponseWriter, r *http.Request) {
 }
 
 func createNewProductHandler(w http.ResponseWriter, r *http.Request) {
-	reqBody, _ := ioutil.ReadAll(r.Body)
+	reqBody, err := ioutil.ReadAll(r.Body)
+	if err != nil {
+		http.Error(w, "Unable to read request body", http.StatusInternalServerError)
+	}
 	defer r.Body.Close()
+
 	var item product
 	if err := json.Unmarshal(reqBody, &item); err != nil {
 		w.WriteHeader(http.StatusInternalServerError)
@@ -64,8 +68,12 @@ func updateProductHandler(w http.ResponseWriter, r *http.Request) {
 	}
 
 	var updatedProduct product
-	reqBody, _ := ioutil.ReadAll(r.Body)
+	reqBody, err := ioutil.ReadAll(r.Body)
+	if err != nil {
+		http.Error(w, "Unable to read request body", http.StatusInternalServerError)
+	}
 	defer r.Body.Close()
+
 	if err = json.Unmarshal(reqBody, &updatedProduct); err != nil {
 		w.WriteHeader(http.StatusInternalServerError)
 	}
@@ -91,9 +99,9 @@ func deleteProductHandler(w http.ResponseWriter, r *http.Request) {
 		http.Error(w, "Unable to convert string to int", http.StatusInternalServerError)
 	}
 
-	for i, product := range products {
+	for _, product := range products {
 		if int64(product.ID) == id {
-			products = append(products[:i], products[i+1:]...)
+			products = append(products, product)
 		}
 	}
 }
