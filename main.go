@@ -4,8 +4,8 @@ import (
 	"bufio"
 	"errors"
 	"fmt"
-	"github.com/alexhcole95/pivottechschool/calculator"
 	"os"
+	"pivottechschool/cmd/calculator"
 	"strconv"
 	"strings"
 )
