@@ -1,8 +1,10 @@
 
-## This is a repository that consists of my work while at PivotTechSchool.
+## Hello!
 
-Each branch will be a separate project and will be named accordingly.
+This branch consists of an HTTP client that retrieves Marvel characters.
 
-***
+The project was coded and tested in GoLand.
+
+---
 
 **Thanks for looking!** Please reach out if there are any questions!
