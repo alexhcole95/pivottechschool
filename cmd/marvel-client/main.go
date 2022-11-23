@@ -3,7 +3,7 @@ package main
 import (
 	"fmt"
 	"log"
-	"pivottechschool/cmd/marvel"
+	"pivottechschool/marvel"
 )
 
 func main() {
@@ -14,8 +14,6 @@ func main() {
 	}
 
 	for _, char := range chars {
-		fmt.Println(char.Name)
-		fmt.Println(char.Description)
-		fmt.Println("\n")
+		fmt.Printf("Name: %v | Description: %v\n", char.Name, char.Description)
 	}
 }
