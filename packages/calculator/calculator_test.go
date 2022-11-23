@@ -2,7 +2,7 @@ package calculator_test
 
 import (
 	"fmt"
-	"pivottechschool/cmd/writing-tests"
+	"pivottechschool/packages/calculator"
 	"testing"
 )
 
