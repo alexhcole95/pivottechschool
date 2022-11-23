@@ -30,7 +30,7 @@ func returnProductHandler(w http.ResponseWriter, r *http.Request) {
 	vars := mux.Vars(r)
 	id, err := strconv.ParseInt(vars["id"], 10, 64)
 	if err != nil {
-		http.Error(w, "Unable to convert string to int", http.StatusInternalServerError)
+		http.Error(w, "Unable to convert string to int", 400)
 	}
 
 	for _, product := range products {
@@ -43,34 +43,42 @@ func returnProductHandler(w http.ResponseWriter, r *http.Request) {
 }
 
 func createNewProductHandler(w http.ResponseWriter, r *http.Request) {
+	var item product
+	var items []product
 	reqBody, err := ioutil.ReadAll(r.Body)
 	if err != nil {
-		http.Error(w, "Unable to read request body", http.StatusInternalServerError)
+		http.Error(w, "Unable to read request body", 400)
 	}
 	defer r.Body.Close()
 
-	var item product
 	if err := json.Unmarshal(reqBody, &item); err != nil {
 		w.WriteHeader(http.StatusInternalServerError)
 	}
-	products = append(products, item)
 
-	if err := json.NewEncoder(w).Encode(item); err != nil {
+	items = append(products, item)
+	bs, err := json.Marshal(items)
+	if err != nil {
 		w.WriteHeader(http.StatusInternalServerError)
 	}
+
+	if err := os.WriteFile("products.json", bs, 0666); err != nil {
+		w.WriteHeader(http.StatusInternalServerError)
+	}
+	products = items
+	w.WriteHeader(http.StatusCreated)
 }
 
 func updateProductHandler(w http.ResponseWriter, r *http.Request) {
 	vars := mux.Vars(r)
 	id, err := strconv.ParseInt(vars["id"], 10, 64)
 	if err != nil {
-		http.Error(w, "Unable to convert string to int", http.StatusInternalServerError)
+		http.Error(w, "Unable to convert string to int", 400)
 	}
 
 	var updatedProduct product
 	reqBody, err := ioutil.ReadAll(r.Body)
 	if err != nil {
-		http.Error(w, "Unable to read request body", http.StatusInternalServerError)
+		http.Error(w, "Unable to read request body", 400)
 	}
 	defer r.Body.Close()
 
@@ -93,17 +101,30 @@ func updateProductHandler(w http.ResponseWriter, r *http.Request) {
 }
 
 func deleteProductHandler(w http.ResponseWriter, r *http.Request) {
+	var deletedItem bool
+	var newProduct []product
 	vars := mux.Vars(r)
-	id, err := strconv.ParseInt(vars["id"], 10, 64)
-	if err != nil {
-		http.Error(w, "Unable to convert string to int", http.StatusInternalServerError)
-	}
 
-	for _, product := range products {
-		if int64(product.ID) == id {
-			products = append(products, product)
+	for _, v := range products {
+		if strconv.Itoa(v.ID) != vars["id"] {
+			newProduct = append(newProduct, v)
+		} else {
+			deletedItem = true
 		}
 	}
+
+	if deletedItem {
+		bs, err := json.Marshal(newProduct)
+		if err != nil {
+			w.WriteHeader(http.StatusInternalServerError)
+		}
+		if err := os.WriteFile("products.json", bs, 0666); err != nil {
+			w.WriteHeader(http.StatusInternalServerError)
+		}
+	}
+
+	products = newProduct
+	w.WriteHeader(http.StatusOK)
 }
 
 func initProducts() {
@@ -121,7 +142,7 @@ func main() {
 	initProducts()
 	r := mux.NewRouter()
 
-	r.HandleFunc("/products", getProductsHandler)
+	r.HandleFunc("/products", getProductsHandler).Methods("GET")
 	r.HandleFunc("/products", createNewProductHandler).Methods("POST")
 	r.HandleFunc("/products/{id}", updateProductHandler).Methods("PUT")
 	r.HandleFunc("/products/{id}", deleteProductHandler).Methods("DELETE")
