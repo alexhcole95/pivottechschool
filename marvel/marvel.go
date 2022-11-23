@@ -14,10 +14,6 @@ import (
 )
 
 var CharactersURL = "https://gateway.marvel.com:443/v1/public/characters"
-var publicKey, privateKey = marvelKeys()
-var httpClient = &http.Client{
-	Timeout: 10 * time.Second,
-}
 
 type Client struct {
 	baseURL    string
@@ -51,6 +47,10 @@ func marvelKeys() (public, private string) {
 }
 
 func NewClient(url string) Client {
+	var publicKey, privateKey = marvelKeys()
+	var httpClient = &http.Client{
+		Timeout: 10 * time.Second,
+	}
 	return Client{url, publicKey, privateKey, httpClient}
 }
 
