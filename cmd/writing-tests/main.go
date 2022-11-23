@@ -5,7 +5,7 @@ import (
 	"errors"
 	"fmt"
 	"os"
-	"pivottechschool/cmd/calculator"
+	"pivottechschool/cmd/writing-tests"
 	"strconv"
 	"strings"
 )
