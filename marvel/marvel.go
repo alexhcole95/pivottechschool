@@ -13,7 +13,7 @@ import (
 	"time"
 )
 
-var BaseURL = "https://gateway.marvel.com:443/v1/public/"
+const BaseURL = "https://gateway.marvel.com:443/v1/public/"
 
 type Client struct {
 	baseURL    string
@@ -24,15 +24,15 @@ type Client struct {
 
 type CharHTTPResponse struct {
 	Data struct {
-		Offset  int          `json:"offset"`
-		Limit   int          `json:"limit"`
-		Total   int          `json:"total"`
-		Count   int          `json:"count"`
-		Results []Characters `json:"results"`
+		Offset  int         `json:"offset"`
+		Limit   int         `json:"limit"`
+		Total   int         `json:"total"`
+		Count   int         `json:"count"`
+		Results []Character `json:"results"`
 	} `json:"data"`
 }
 
-type Characters struct {
+type Character struct {
 	Name        string `json:"name"`
 	Description string `json:"description"`
 }
@@ -66,7 +66,7 @@ func (c *Client) signURL(url string) string {
 	return fmt.Sprintf("%s&ts=%d&apikey=%s&hash=%s", url, t, c.publicKey, hash)
 }
 
-func (c *Client) GetCharacters(l int) ([]Characters, error) {
+func (c *Client) GetCharacters(l int) ([]Character, error) {
 	url := c.baseURL + fmt.Sprintf("characters/?limit=%d", l)
 	url = c.signURL(url)
 
