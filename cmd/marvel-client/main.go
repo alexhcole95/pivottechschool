@@ -7,7 +7,7 @@ import (
 )
 
 func main() {
-	client := marvel.NewClient(marvel.CharactersURL)
+	client := marvel.NewClient(marvel.BaseURL)
 	chars, err := client.GetCharacters(5)
 	if err != nil {
 		log.Fatal(err)
