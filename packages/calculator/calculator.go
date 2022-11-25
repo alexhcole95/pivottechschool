@@ -2,7 +2,6 @@ package calculator
 
 import (
 	"errors"
-	"math"
 )
 
 func Add(a, b int) int {
