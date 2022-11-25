@@ -13,7 +13,7 @@ import (
 	"time"
 )
 
-var CharactersURL = "https://gateway.marvel.com:443/v1/public/characters"
+var BaseURL = "https://gateway.marvel.com:443/v1/public/"
 
 type Client struct {
 	baseURL    string
@@ -24,20 +24,20 @@ type Client struct {
 
 type CharHTTPResponse struct {
 	Data struct {
-		Offset  int           `json:"offset"`
-		Limit   int           `json:"limit"`
-		Total   int           `json:"total"`
-		Count   int           `json:"count"`
-		Results []CharResults `json:"results"`
+		Offset  int          `json:"offset"`
+		Limit   int          `json:"limit"`
+		Total   int          `json:"total"`
+		Count   int          `json:"count"`
+		Results []Characters `json:"results"`
 	} `json:"data"`
 }
 
-type CharResults struct {
+type Characters struct {
 	Name        string `json:"name"`
 	Description string `json:"description"`
 }
 
-func marvelKeys() (public, private string) {
+func marvelKeys() (string, string) {
 	if err := godotenv.Load(); err != nil {
 		log.Fatal("Error loading .env file")
 	}
@@ -66,8 +66,8 @@ func (c *Client) signURL(url string) string {
 	return fmt.Sprintf("%s&ts=%d&apikey=%s&hash=%s", url, t, c.publicKey, hash)
 }
 
-func (c *Client) GetCharacters(l int) ([]CharResults, error) {
-	url := c.baseURL + fmt.Sprintf("?limit=%d", l)
+func (c *Client) GetCharacters(l int) ([]Characters, error) {
+	url := c.baseURL + fmt.Sprintf("characters/?limit=%d", l)
 	url = c.signURL(url)
 
 	res, err := c.httpClient.Get(url)
