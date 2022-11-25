@@ -24,6 +24,7 @@ func Divide(a, b int) (int, error) {
 	return a / b, nil
 }
 
-func Pow(x, y float64) float64 {
-	return math.Pow(x, y)
+func Pow(x float64, y float64) float64 {
+	z := math.Pow(x, y)
+	return z
 }
