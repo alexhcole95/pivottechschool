@@ -2,8 +2,6 @@ package main
 
 import (
 	"fmt"
-	_ "math"
-
 	"github.com/alexhcole95/pivottechschool/packages/calculator"
 )
 
