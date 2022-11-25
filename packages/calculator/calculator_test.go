@@ -55,7 +55,7 @@ func CalculatorTest(t *testing.T) {
 				}
 			case "^":
 				if result := calculator.Pow(float64(cases.num1), float64(cases.num2)); result != float64(cases.solution) {
-					t.Errorf("result: %f - solution: %f", result, cases.solution)
+					t.Errorf("result: %f - solution: %d", result, cases.solution)
 				}
 			default:
 				t.Errorf("invalid: %s", cases.operator)
