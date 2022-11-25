@@ -2,7 +2,7 @@ package main
 
 import (
 	"fmt"
-	"github.com/alexhcole95/pivottechschool/packages/calculator"
+	"pivottechschool/packages/calculator"
 )
 
 func main() {
