@@ -1,0 +1,4 @@
+github.com/alexhcole95/pivottechschool v0.0.0-20221125012711-31f0539e3ef5 h1:Y0TTHRUz8tiiNkBy6AhHk0u6mFyoZLSh3RHoxRD9GPc=
+github.com/alexhcole95/pivottechschool v0.0.0-20221125012711-31f0539e3ef5/go.mod h1:z/f8hF6QsPmX8PWBxXfqrE3cs8PvN6IGvEo4QIjGBtU=
+github.com/gorilla/mux v1.8.0 h1:i40aqfkR1h2SlN9hojwV5ZA91wcXFOvkdNIeFDP5koI=
+github.com/gorilla/mux v1.8.0/go.mod h1:DVbg23sWSpFRCP0SfiEN6jmj59UnW/n46BH5rLB71So=
