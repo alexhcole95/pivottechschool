@@ -8,7 +8,7 @@ import (
 	"os"
 )
 
-var Products []struct {
+type Products []struct {
 	ID    int     `json:"id"`
 	Name  string  `json:"name"`
 	Price float64 `json:"price"`
@@ -75,10 +75,7 @@ func main() {
 		var id int
 		var name string
 		var price float64
-		rows, err := db.Query("select id, name, price from products where id = ?", i)
-		if err != nil {
-			log.Fatal(err)
-		}
+		rows := db.QueryRow("select id, name, price from products where id = ?", i)
 
 		for rows.Next() {
 			err = rows.Scan(&id, &name, &price)
