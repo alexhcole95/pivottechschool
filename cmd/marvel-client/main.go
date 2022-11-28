@@ -3,7 +3,7 @@ package main
 import (
 	"fmt"
 	"log"
-	"pivottechschool/marvel"
+	"pivottechschool/packages/marvel"
 )
 
 func main() {
