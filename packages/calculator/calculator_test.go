@@ -6,7 +6,7 @@ import (
 	"testing"
 )
 
-func CalculatorTest(t *testing.T) {
+func TestCalculator(t *testing.T) {
 	testCases := []struct {
 		num1     int
 		num2     int
@@ -25,9 +25,6 @@ func CalculatorTest(t *testing.T) {
 		{39, 13, "/", 3},
 		{900, 150, "/", 6},
 		{8, 0, "/", 0},
-		{2, 8, "^", 256},
-		{3, 3, "^", 27},
-		{4, 1, "^", 4},
 	}
 
 	for _, cases := range testCases {
