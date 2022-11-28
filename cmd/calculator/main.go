@@ -2,8 +2,7 @@ package main
 
 import (
 	"fmt"
-
-	"github.com/alexhcole95/pivottechschool/packages/calculator"
+	"pivottechschool/packages/calculator"
 )
 
 func main() {
@@ -16,4 +15,6 @@ func main() {
 
 	r, err = calculator.Divide(6, 0)
 	fmt.Printf("Divide(6, 3) = %d, %v\n", r, err)
+
+	fmt.Printf("Pow(2, 3) = %f\n", calculator.Pow(2, 3))
 }
