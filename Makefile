@@ -4,4 +4,4 @@ test:
 	cd packages/calculator && go test -v ./...
 
 build:
-	cd cmd/calculator && go build -o calculator
+	cd cmd/writing-tests && go build -o calculator
