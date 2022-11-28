@@ -39,7 +39,7 @@ type Character struct {
 
 func marvelKeys() (string, string) {
 	if err := godotenv.Load(); err != nil {
-		log.Fatal("Error loading .env file")
+		log.Fatal("Error loading env file")
 	}
 	pub := os.Getenv("MARVEL_PUBLIC_KEY")
 	priv := os.Getenv("MARVEL_PRIVATE_KEY")
@@ -67,7 +67,7 @@ func (c *Client) signURL(url string) string {
 }
 
 func (c *Client) GetCharacters(l int) ([]Character, error) {
-	url := c.baseURL + fmt.Sprintf("characters/?limit=%d", l)
+	url := c.baseURL + fmt.Sprintf("characters?limit=%d", l)
 	url = c.signURL(url)
 
 	res, err := c.httpClient.Get(url)
