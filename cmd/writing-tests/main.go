@@ -68,6 +68,8 @@ func handleInput(str string) {
 		if checkPrintError(err) {
 			return
 		}
+	case "^":
+		result = int(calculator.Pow(float64(a), float64(b)))
 	default:
 		fmt.Println(errors.New("error: unknown operator. please try again"))
 	}
@@ -75,7 +77,7 @@ func handleInput(str string) {
 }
 
 func checkContains(str string) (string, error) {
-	operators := []string{"+", "-", "*", "/"}
+	operators := []string{"+", "-", "*", "/", "^"}
 	var containsOperator []string
 	for _, v := range operators {
 		if strings.Contains(str, v) {
