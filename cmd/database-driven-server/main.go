@@ -22,6 +22,21 @@ type product struct {
 
 var db *sql.DB
 
+// item.Name == "" || item.ID == 0 || item.Price == 0
+func (p product) IsValid() bool {
+	if p.Name == "" {
+		return false
+	}
+	if p.ID == 0 {
+		return false
+	}
+	if p.Price == 0 {
+		return false
+	}
+
+	return true
+}
+
 func initProducts() *sql.DB {
 	var err error
 	log.Println("Connecting to DB...")
@@ -35,6 +50,46 @@ func initProducts() *sql.DB {
 		log.Fatalf("Unable to reach database: %v", err)
 	}
 	log.Println("Connected to DB!")
+
+	return db
+}
+
+func getProductsHandler(w http.ResponseWriter, r *http.Request) {
+	log.Println("Receiving request from client...")
+
+	lim := r.FormValue("limit")
+	l, err := strconv.Atoi(lim)
+	if err != nil {
+		http.Error(w, "Unable to convert string to int", 400)
+	}
+	sort := r.FormValue("sort")
+
+	log.Println("Request received! Searching for products...")
+	rows, err := db.Query("SELECT * FROM products ORDER BY ? LIMIT ?", sort, l)
+	if err != nil {
+		log.Println(err)
+	}
+
+	for rows.Next() {
+		var id int
+		var name string
+		var price float64
+		err = rows.Scan(&id, &name, &price)
+		if err != nil {
+			log.Fatal(err)
+		}
+
+		info = append(info, product{ID: id, Name: name, Price: price})
+	}
+
+	log.Println("Products found! Returning products to client...")
+	if err = json.NewEncoder(w).Encode(info); err != nil {
+		w.WriteHeader(http.StatusInternalServerError)
+	}
+}
+
+func getProductHandler(w http.ResponseWriter, r *http.Request) {
+	log.Println("Receiving request from client...")
 
 	rows, err := db.Query("SELECT * FROM products")
 	if err != nil {
@@ -52,34 +107,6 @@ func initProducts() *sql.DB {
 
 		info = append(info, product{ID: id, Name: name, Price: price})
 	}
-
-	return db
-}
-
-func getProductsHandler(w http.ResponseWriter, r *http.Request) {
-	log.Println("Receiving request from client...")
-
-	vars := mux.Vars(r)
-	lim, err := strconv.ParseInt(vars["lim"], 10, 64)
-	if err != nil {
-		http.Error(w, "Unable to convert string to int", 400)
-	}
-	sort := vars["sort"]
-
-	log.Println("Request received! Searching for products...")
-	if lim < 0 || lim > int64(len(info)) {
-		log.Println("Products not found! Returning status to client...")
-		http.Error(w, "ID not found", 404)
-	} else {
-		log.Println("Products found! Returning products to client...")
-		if _, err = db.Exec("SELECT * FROM products WHERE id = ? LIMIT ?", sort, lim); err != nil {
-			log.Fatal(err)
-		}
-	}
-}
-
-func getProductHandler(w http.ResponseWriter, r *http.Request) {
-	log.Println("Receiving request from client...")
 
 	vars := mux.Vars(r)
 	itemID, err := strconv.ParseInt(vars["id"], 10, 64)
@@ -121,11 +148,11 @@ func addProductHandler(w http.ResponseWriter, r *http.Request) {
 	info = items
 
 	log.Println("Request received! Adding product to DB...")
-	if item.Name == "" || item.ID == 0 || item.Price == 0 {
+	if item.IsValid() == false {
 		http.Error(w, "Missing required fields", 400)
 	} else {
 		if _, err = db.Exec("INSERT INTO products (id, name, price) VALUES (?, ?, ?)", item.ID, item.Name, item.Price); err != nil {
-			log.Fatal(err)
+			log.Println(err)
 		}
 
 		log.Println("Product added to DB! Returning status to client...")
@@ -135,6 +162,23 @@ func addProductHandler(w http.ResponseWriter, r *http.Request) {
 
 func updateProductHandler(w http.ResponseWriter, r *http.Request) {
 	log.Println("Receiving request from client...")
+
+	rows, err := db.Query("SELECT * FROM products")
+	if err != nil {
+		log.Println(err)
+	}
+
+	for rows.Next() {
+		var id int
+		var name string
+		var price float64
+		err = rows.Scan(&id, &name, &price)
+		if err != nil {
+			log.Println(err)
+		}
+
+		info = append(info, product{ID: id, Name: name, Price: price})
+	}
 
 	vars := mux.Vars(r)
 	itemID, err := strconv.ParseInt(vars["id"], 10, 64)
@@ -212,7 +256,7 @@ func main() {
 	initProducts()
 
 	r := mux.NewRouter()
-	r.HandleFunc("/products?limit={lim}&sort={sort}", getProductsHandler).Methods("GET")
+	r.HandleFunc("/products", getProductsHandler).Methods("GET")
 	r.HandleFunc("/products/{id}", getProductHandler).Methods("GET")
 	r.HandleFunc("/products", addProductHandler).Methods("POST")
 	r.HandleFunc("/products/{id}", updateProductHandler).Methods("PUT")
