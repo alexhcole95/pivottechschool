@@ -11,7 +11,7 @@ import (
 	"strconv"
 )
 
-var products []product
+var info []product
 
 type product struct {
 	ID          int     `json:"id"`
@@ -50,7 +50,7 @@ func initProducts() *sql.DB {
 			log.Fatal(err)
 		}
 
-		products = append(products, product{ID: id, Name: name, Price: price})
+		info = append(info, product{ID: id, Name: name, Price: price})
 	}
 
 	return db
@@ -67,7 +67,7 @@ func getProductsHandler(w http.ResponseWriter, r *http.Request) {
 	sort := vars["sort"]
 
 	log.Println("Request received! Searching for products...")
-	if lim < 0 || lim > int64(len(products)) {
+	if lim < 0 || lim > int64(len(info)) {
 		log.Println("Products not found! Returning status to client...")
 		http.Error(w, "ID not found", 404)
 	} else {
@@ -88,11 +88,11 @@ func getProductHandler(w http.ResponseWriter, r *http.Request) {
 	}
 
 	log.Println("Request received! Searching for product...")
-	if itemID < 0 || itemID > int64(len(products)) {
+	if itemID < 0 || itemID > int64(len(info)) {
 		log.Println("Product not found! Returning status to client...")
 		http.Error(w, "ID not found", 404)
 	} else {
-		for _, product := range products {
+		for _, product := range info {
 			if int64(product.ID) == itemID {
 				log.Println("Product found! Returning product to client...")
 				if err = json.NewEncoder(w).Encode(product); err != nil {
@@ -117,8 +117,8 @@ func addProductHandler(w http.ResponseWriter, r *http.Request) {
 	if err = json.Unmarshal(reqBody, &item); err != nil {
 		w.WriteHeader(http.StatusInternalServerError)
 	}
-	items = append(products, item)
-	products = items
+	items = append(info, item)
+	info = items
 
 	log.Println("Request received! Adding product to DB...")
 	if item.Name == "" || item.ID == 0 || item.Price == 0 {
@@ -158,14 +158,14 @@ func updateProductHandler(w http.ResponseWriter, r *http.Request) {
 		http.Error(w, "Missing required fields", 400)
 	} else {
 		log.Println("Product found! Updating product in DB...")
-		for i, product := range products {
+		for i, product := range info {
 			if int64(product.ID) == itemID {
 				product.ID = updatedProduct.ID
 				product.Name = updatedProduct.Name
 				product.Price = updatedProduct.Price
-				products[i] = product
+				info[i] = product
 				if _, err = db.Exec("UPDATE products SET name = ?, price = ? WHERE id = ?", updatedProduct.Name, updatedProduct.Price, updatedProduct.ID); err != nil {
-					log.Fatal(err)
+					log.Println(err)
 				}
 			}
 		}
@@ -185,21 +185,21 @@ func deleteProductHandler(w http.ResponseWriter, r *http.Request) {
 		http.Error(w, "Unable to convert string to int", 400)
 	}
 
-	if itemID < 0 || itemID > int64(len(products)) {
+	if itemID < 0 || itemID > int64(len(info)) {
 		log.Println("Product not found! Returning status to client...")
 		http.Error(w, "ID not found", 404)
 	} else {
 		log.Println("Request received! Searching for product...")
-		for _, product := range products {
+		for _, product := range info {
 			if int64(product.ID) != itemID {
 				newProduct = append(newProduct, product)
 			}
 		}
-		products = newProduct
+		info = newProduct
 
 		log.Println("Product found! Deleting product from DB...")
 		if _, err = db.Exec("DELETE FROM products WHERE id = ?", itemID); err != nil {
-			log.Fatal(err)
+			log.Println(err)
 		}
 
 		log.Println("Product deleted from DB! Returning status to client...")
