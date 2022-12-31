@@ -26,7 +26,7 @@ func getProductsHandler(w http.ResponseWriter, r *http.Request) {
 	}
 }
 
-func returnProductHandler(w http.ResponseWriter, r *http.Request) {
+func getProductByIDHandler(w http.ResponseWriter, r *http.Request) {
 	vars := mux.Vars(r)
 	id, err := strconv.ParseInt(vars["id"], 10, 64)
 	if err != nil {
@@ -143,10 +143,10 @@ func main() {
 	r := mux.NewRouter()
 
 	r.HandleFunc("/products", getProductsHandler).Methods("GET")
+	r.HandleFunc("/products/{id}", getProductByIDHandler).Methods("GET")
 	r.HandleFunc("/products", createNewProductHandler).Methods("POST")
 	r.HandleFunc("/products/{id}", updateProductHandler).Methods("PUT")
 	r.HandleFunc("/products/{id}", deleteProductHandler).Methods("DELETE")
-	r.HandleFunc("/products/{id}", returnProductHandler)
 
 	log.Println("Listening on Port 8080")
 	log.Fatal(http.ListenAndServe(":8080", r))
